@@ -1,5 +1,27 @@
 #include <stdio.h>
+#include <string.h>
 
 void shell_loop(){
-    printf("hello");
+    char buffer[1024];
+
+    while(1){
+        printf("mini-shell> ");
+
+        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+            printf("\n");
+            break;
+        }
+
+        size_t len = strlen(buffer);
+        if (len > 0 && buffer[len-1] == '\n'){
+            buffer[len-1] = '\0';
+        }
+
+        if(strcmp(buffer, "exit") == 0){
+            break;
+        }
+
+        printf("echo: %s\n", buffer);
+    
+    }
 }
