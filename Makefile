@@ -3,12 +3,8 @@ CFLAGS := -Iinclude -Wall -Wextra -g
 
 all: mini-shell
 
-mini-shell: src/main.o src/shell.o
+mini-shell: src/main.o src/shell.o src/parser.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
-
-.PHONY: clean
-clean:
-	rm -f src/*.o mini-shell
