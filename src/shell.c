@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-int is_blank(char *s);
+#include "utils.h"
 
 void shell_loop(){
     char buffer[1024];
@@ -15,7 +15,7 @@ void shell_loop(){
             break;
         }
 
-        //strip trailing \n
+        //strips trailing \n
         size_t len = strlen(buffer);
         if (len > 0 && buffer[len-1] == '\n'){
             buffer[len-1] = '\0';
@@ -31,11 +31,3 @@ void shell_loop(){
     }
 }
 
-int is_blank(char *s){
-    while (*s != '\0'){
-        if( !isspace(*s))
-            return 0;
-        s++;
-    }
-    return 1;
-}
