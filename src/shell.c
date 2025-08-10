@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "utils.h"
+#include "parser.h"
 
 void shell_loop(){
     char buffer[1024];
@@ -27,7 +27,20 @@ void shell_loop(){
         //exit the loop
         if(strcmp(buffer, "exit") == 0) break;
 
-        printf("echo: %s\n", buffer);
+        char *argv[MAX_TOKENS];
+        int argc = tokenize(buffer, argv, MAX_TOKENS);
+
+        for (int i = 0; argv[i] != NULL; i++) {
+            char *p = argv[i];
+            while(*p != '\0'){
+                putchar(*p);
+                p++;
+            }
+            putchar(' ');
+        }
+        putchar('\n');
+        
+
     }
 }
 
