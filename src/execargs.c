@@ -38,6 +38,17 @@ static int ensure_capacity(ExecArgs *ea){
     return 0;
 }
 
+char *c_string_duplication(const char *s){
+    if(s==NULL) return NULL;
+
+    size_t len = strlen(s) + 1;
+    char *copy = malloc(len);
+    if (copy == NULL) return NULL;
+
+    memcpy(copy, s, len);
+    return copy;
+}
+
 void execargs_init(ExecArgs *ea){
     ea->argv = NULL;
     ea->argc = 0;
@@ -45,12 +56,14 @@ void execargs_init(ExecArgs *ea){
 }
 
 int execargs_push(ExecArgs *ea, const char *token) {
-
-
+    ensure_capacity(ea);
+    ea->argv[ea->argc] =  c_string_duplication(token);
+    ea->argc += 1;
 }
 
 int execargs_finalize(ExecArgs *ea) {             
-  
+    ea->argv[ea->argc] == NULL;
+    
 }
 
 
