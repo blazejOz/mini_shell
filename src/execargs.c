@@ -16,27 +16,23 @@ static int ensure_capacity(ExecArgs *ea){
     if (ea->capacity == 0){
         int new_capacity = 4;
         char **tmp = calloc(new_capacity, sizeof(*ea->argv));
-        if(tmp == NULL){
-            printf("error allocating memory");
-            return -1;
-        }   
+        if(tmp == NULL) return -1;  
+
         ea->argv = tmp;
         ea->capacity = new_capacity; 
-        return 0;
+        return 1;
     }
     //reallocate memory when more arguments 
     if(ea->argc == ea->capacity){
         int new_capacity = ea->capacity * 2;
         char **new_argv = realloc(ea->argv, new_capacity * sizeof(*ea->argv));
-        if(new_argv == NULL){
-            printf("error reallocating memory");
-            return -1;
-        }        
+        if(new_argv == NULL) return -1;
+           
         ea->argv = new_argv;
         ea->capacity = new_capacity;
-        return 0;
+        return 1;
     }
-    return 0;
+    return 1;
 }
 
 void execargs_init(ExecArgs *ea){
@@ -46,13 +42,16 @@ void execargs_init(ExecArgs *ea){
 }
 
 int execargs_push(ExecArgs *ea, const char *token) {
-    ensure_capacity(ea);
-    ea->argv[ea->argc] =  c_string_duplication(token);
-    ea->argc += 1;
+    if(ensure_capacity(ea)){
+        ea->argv[ea->argc] = c_string_duplication(token);
+        ea->argc += 1;
+        return 1;
+    }
+    return -1;
 }
 
 int execargs_finalize(ExecArgs *ea) {             
-    ea->argv[ea->argc] == NULL;
+    ea->argv[ea->argc] = NULL;
 
 }
 
@@ -61,7 +60,6 @@ void execargs_free(ExecArgs *ea) {
     if (ea->argv == NULL) {
         ea->argc = 0;
         ea->capacity = 0;
-        return;
     }
     for (int i = 0; i < ea->argc; ++i) {
         free(ea->argv[i]);

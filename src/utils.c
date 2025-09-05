@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h> 
 
 // checks if string is all whitespaces
 int is_blank(char *s){
