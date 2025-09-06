@@ -35,10 +35,15 @@ static void test_push_and_copy(void) {
 
 static void test_growth(void) {
     ExecArgs ea; execargs_init(&ea);
-    for (int i = 0; i < 8; ++i) { char tmp[16]; snprintf(tmp, sizeof tmp, "t%d", i); assert(execargs_push(&ea, tmp) == 0); }
+    for (int i = 0; i < 8; ++i) { 
+        char tmp[16]; 
+        snprintf(tmp, sizeof tmp, "t%d", i); 
+        assert(execargs_push(&ea, tmp) == 0); 
+    }
     assert(ea.argc == 8);
     assert(ea.capacity >= 8);
     execargs_free(&ea);
+    puts("OK: test_growth");
 }
 
 static void test_finalize_sets_null(void) {
@@ -68,7 +73,7 @@ static void test_push_null_token_rejected(void) {
 int main(void) {
     test_init();
     test_push_and_copy();
-    // test_growth();
+    test_growth();
     // test_finalize_sets_null();
     // test_free_idempotent();
     // test_push_null_token_rejected();
