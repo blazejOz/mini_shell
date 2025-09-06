@@ -53,13 +53,15 @@ static void test_finalize_sets_null(void) {
     assert(execargs_finalize(&ea) == 0);
     assert(ea.argv[ea.argc] == NULL);
     execargs_free(&ea);
+    puts("OK: test_finalize_sets_null");
 }
 
 static void test_free_idempotent(void) {
     ExecArgs ea; execargs_init(&ea);
     (void)execargs_push(&ea, "one");
     execargs_free(&ea);
-    execargs_free(&ea); // should not crash
+    execargs_free(&ea);
+    puts("OK: test_free_idempotent");
 }
 
 static void test_push_null_token_rejected(void) {
@@ -68,15 +70,16 @@ static void test_push_null_token_rejected(void) {
     assert(r == -1);
     assert(ea.argc == 0);
     execargs_free(&ea);
+    puts("OK: test_push_null_token_rejected");
 }
 
 int main(void) {
     test_init();
     test_push_and_copy();
     test_growth();
-    // test_finalize_sets_null();
-    // test_free_idempotent();
-    // test_push_null_token_rejected();
+    test_finalize_sets_null();
+    test_free_idempotent();
+    test_push_null_token_rejected();
     puts("OK: all execargs tests passed");
     return 0;
 }

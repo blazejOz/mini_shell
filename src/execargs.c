@@ -27,9 +27,10 @@ int execargs_push(ExecArgs *ea, const char *token) {
     return 0;
 }
 
-int execargs_finalize(ExecArgs *ea) {             
+int execargs_finalize(ExecArgs *ea) {
+    if(ensure_capacity(ea) < 0) return -1;
     ea->argv[ea->argc] = NULL;
-
+    return 0;
 }
 
 
