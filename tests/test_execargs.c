@@ -2,14 +2,16 @@
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
-#include "execargs.h"   // your API
+#include "execargs.h" 
 
 
 static void test_init(void) {
-    ExecArgs ea; execargs_init(&ea);
+    ExecArgs ea; 
+    execargs_init(&ea);
     assert(ea.argv == NULL);
     assert(ea.argc == 0);
     assert(ea.capacity == 0);
+    puts("OK: test_inint");
 }
 
 static void test_push_and_copy(void) {
@@ -26,8 +28,9 @@ static void test_push_and_copy(void) {
     char buf[] = "cat";
     (void)execargs_push(&ea, buf);
     buf[0] = 'X';
-    assert(strcmp(ea.argv[3], "cat") == 0); // proves deep copy
+    assert(strcmp(ea.argv[3], "cat") == 0);
     execargs_free(&ea);
+    puts("OK: test_push_and_copy");
 }
 
 static void test_growth(void) {
@@ -64,7 +67,7 @@ static void test_push_null_token_rejected(void) {
 
 int main(void) {
     test_init();
-    // test_push_and_copy();
+    test_push_and_copy();
     // test_growth();
     // test_finalize_sets_null();
     // test_free_idempotent();
