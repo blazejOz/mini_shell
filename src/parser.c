@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include <stddef.h>
 
-int tokenize(char *line, char **argv, int max_tokens){
+int tokenize(char *line, char **tokens, int max_tokens){
     char *char_ptr = line;
     int argc = 0;
 
@@ -20,8 +20,8 @@ int tokenize(char *line, char **argv, int max_tokens){
             *char_ptr = '\0';
             char_ptr++;
         }
-        argv[argc++] = token_start;
+        tokens[argc++] = token_start;
     }
-    argv[argc] = NULL;
+    tokens[argc] = NULL;
     return argc;
 }

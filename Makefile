@@ -11,14 +11,15 @@ src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # --- test support ---
-build:
+
+build/test_execargs: tests/test_execargs.c src/execargs.c src/utils.c
 	mkdir -p build
-
-build/test_execargs: build tests/test_execargs.c src/execargs.c src/utils.c
 	$(CC) $(CFLAGS) $^ -o $@
 
-build/test_parser: build tests/test_parser.c src/parser.c src/utils.c
+build/test_parser: tests/test_parser.c src/parser.c src/utils.c
+	mkdir -p build
 	$(CC) $(CFLAGS) $^ -o $@
+
 
 TEST_BIN := build/test_execargs build/test_parser
 
