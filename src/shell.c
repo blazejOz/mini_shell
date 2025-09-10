@@ -4,6 +4,8 @@
 
 #include "utils.h"
 #include "parser.h"
+#include "execargs.h"
+#include "builtins.h"
 
 void shell_loop(){
     char buffer[1024];
@@ -16,7 +18,7 @@ void shell_loop(){
             break;
         }
 
-        //strips trailing \n
+        //strips trailing '\n'
         size_t len = strlen(buffer);
         if (len > 0 && buffer[len-1] == '\n'){
             buffer[len-1] = '\0';
@@ -28,20 +30,38 @@ void shell_loop(){
         //exit the loop
         if(strcmp(buffer, "exit") == 0) break;
 
-        char *argv[MAX_TOKENS];
-        int argc = tokenize(buffer, argv, MAX_TOKENS);
+        char *tokens[MAX_TOKENS];
+        int token_count = tokenize(buffer, tokens, MAX_TOKENS);
+        if (token_count <= 0) continue;
 
-        for (int i = 0; argv[i] != NULL; i++) {
-            char *p = argv[i];
-            while(*p != '\0'){
-                putchar(*p);
-                p++;
+        ExecArgs ea; execargs_init(&ea);
+
+        for(int i = 0; i < token_count; i++){
+            if(execargs_push(&ea, tokens[i]) != 0){
+                printf("error execargs_push");
+                execargs_free(&ea);
+                ;
             }
-            putchar(' ');
         }
-        putchar('\n');
         
+        if(execargs_finalize(&ea) != 0){
+            printf("error finalize");
+            execargs_free(&ea);
+            continue;
+        }
 
+        if(ea.argc == 0){
+            execargs_free(&ea);
+            continue;
+        }
+
+        int i = 0;
+        while(ea.argv[i] != NULL){
+            printf("%s, ",ea.argv[i]);
+            i++; 
+        }
+
+        execargs_free(&ea);
     }
 }
 
