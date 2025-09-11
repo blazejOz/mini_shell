@@ -15,9 +15,45 @@ void test_empty(){
     assert(tokens[0] == NULL);
 }
 
+void test_single_token(){
+    char buff[] = "ls";
+    char *tokens[4] = {0};
+    int n = tokenize(buff, tokens, 4);
+
+    assert(n == 1);
+    assert(strcmp(tokens[0], "ls") == 0);
+    assert(tokens[1] == NULL);
+}
+
+void test_multiple_tokens(){
+    char buff[] = "ls -l -a";
+    char *tokens[4] = {0};
+    int n = tokenize(buff, tokens, 4);
+
+    assert(n == 3);
+    assert(strcmp(tokens[0], "ls") == 0);
+    assert(strcmp(tokens[1], "-l") == 0);
+    assert(strcmp(tokens[2], "-a") == 0);
+    assert(tokens[3] == NULL);
+
+}
+
+void test_whitespace(){
+    char buff[] = "     ls\t-l  ";
+    char *tokens[4] = {0};
+    int n = tokenize(buff, tokens, 4);
+
+    assert(n == 2);
+    assert(strcmp(tokens[0], "ls") == 0);
+    assert(strcmp(tokens[1], "-l") == 0);
+    assert(tokens[2] == NULL);
+}
+
 int main(void){
     test_empty();
-
-    puts("OK: test_parser");
+    test_single_token();
+    test_multiple_tokens();
+    test_whitespace();
+    puts("OK: all parser tests passed");
     return 0;
 }
