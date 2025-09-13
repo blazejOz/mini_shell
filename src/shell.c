@@ -55,13 +55,15 @@ void shell_loop(){
             continue;
         }
 
-        int i = 0;
-        while(ea.argv[i] != NULL){
-            printf("%s, ",ea.argv[i]);
-            i++; 
+        int should_exit = 0;
+        int exit_status = 0;
+
+        BuiltinType builtin = builtin_match(ea.argv[0]);
+        if (builtin != BUILTIN_NONE) {
+            int rc = builtin_run(builtin, ea.argc, ea.argv, &should_exit, &exit_status);
+            
         }
 
-        execargs_free(&ea);
     }
 }
 
