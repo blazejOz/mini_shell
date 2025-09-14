@@ -4,7 +4,7 @@ CFLAGS := -Iinclude -Wall -Wextra -g
 # --- main program ---
 all: mini-shell
 
-mini-shell: src/main.o src/shell.o src/parser.o src/utils.o src/execargs.o
+mini-shell: src/main.o src/shell.o src/parser.o src/utils.o src/execargs.o src/builtins.c
 	$(CC) $(CFLAGS) $^ -o $@
 
 src/%.o: src/%.c
