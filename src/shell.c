@@ -1,6 +1,7 @@
 #include "shell.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "utils.h"
 #include "parser.h"
@@ -26,9 +27,6 @@ void shell_loop(){
 
         //check if empty/whitespace buffer
         if(is_blank(buffer)) continue;
-
-        //exit the loop
-        if(strcmp(buffer, "exit") == 0) break;
 
         char *tokens[MAX_TOKENS];
         int token_count = tokenize(buffer, tokens, MAX_TOKENS);
@@ -61,6 +59,12 @@ void shell_loop(){
         BuiltinType builtin = builtin_match(ea.argv[0]);
         if (builtin != BUILTIN_NONE) {
             int rc = builtin_run(builtin, ea.argc, ea.argv, &should_exit, &exit_status);
+            if(should_exit){
+                execargs_free(&ea);
+                exit(exit_status);
+            }
+
+            continue;
             
         }
 
