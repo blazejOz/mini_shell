@@ -64,6 +64,7 @@ void shell_loop(){
                 exit(exit_status);
             }
 
+            execargs_free(&ea);
             continue;
             
         }
