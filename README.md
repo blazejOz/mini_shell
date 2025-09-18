@@ -4,12 +4,24 @@ A simple Unix-like shell written in C for learning and experimentation.
 
 ## Project Structure
 
-.
-├── include/        # Header files
-├── src/            # Source files
-├── tests/          # Unit tests
-├── Makefile
-└── README.md
+```
+mini_shell/
+├── src/                # Source code files
+│   ├── main.c          # Entry point of the shell
+│   ├── shell.c         # Shell loop and command execution
+│   ├── builtins.c      # Implementation of built-in commands
+│   ├── parser.c        # Command parsing and tokenization
+│   └── utils.c         # Utility functions
+├── include/            # Header files
+│   ├── shell.h
+│   ├── builtins.h
+│   ├── parser.h
+│   └── utils.h
+├── tests/              # Test files
+│   └── test_builtins.c
+├── Makefile            # Build instructions
+└── README.md           # Project documentation
+```
 
 
 ## Features
