@@ -14,8 +14,8 @@ BuiltinType builtin_match(const char *cmd){
 
 
 static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status);
-static int bi_cd(int argc, char **argv);
 static int bi_pwd(int argc, char **argv);
+static int bi_cd(int argc, char **argv);
 static int bi_echo(int argc, char **argv);
 
 int builtin_run(BuiltinType which, int argc, char **argv,
@@ -53,7 +53,26 @@ static int bi_pwd(int argc, char **argv){
 
 static int bi_cd(int argc, char **argv){
     if(argc == 1){
-
+        char *home = getenv("HOME");
+        if(home == NULL){
+            printf("cd: HOME env variable error\n");
+            return 1;
+        }
+        if(chdir(home) != 0){
+            perror("cd");
+            return 1;
+        }
+        return 0;
+    }
+    if(argc > 2){
+        printf("cd: too many arguments\n");
+        return 1;
     }
 
+    char *target = argv[1];
+    if(chdir(target) != 0){
+        perror("cd");
+        return 1;
+    }
+    return 0;
 }
