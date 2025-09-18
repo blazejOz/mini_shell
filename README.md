@@ -68,6 +68,6 @@ MIT License
 
 ---
 
-This project is for educational purposes and demonstrates basic shell concepts and system programming in
+This project is for educational purposes and demonstrates basic shell concepts and system programming in C
 
 
