@@ -57,6 +57,12 @@ void shell_loop(){
         int exit_status = 0;
 
         BuiltinType builtin = builtin_match(ea.argv[0]);
+        if(builtin == BUILTIN_NONE){
+            printf("invalid argument\n");
+            execargs_free(&ea);
+            continue;
+        }
+
         if (builtin != BUILTIN_NONE) {
             int rc = builtin_run(builtin, ea.argc, ea.argv, &should_exit, &exit_status);
             if(should_exit){
@@ -66,9 +72,8 @@ void shell_loop(){
 
             execargs_free(&ea);
             continue;
-            
         }
-
     }
+    
 }
 

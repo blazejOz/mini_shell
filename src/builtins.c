@@ -9,6 +9,7 @@ BuiltinType builtin_match(const char *cmd){
     if (strcmp(cmd, "exit") == 0) return BUILTIN_EXIT;
     if (strcmp(cmd, "pwd") == 0) return BUILTIN_PWD;
     if (strcmp(cmd, "cd") == 0) return BUILTIN_CD; 
+    if (strcmp(cmd, "echo") == 0) return BUILTIN_ECHO; 
     return BUILTIN_NONE;
 }
 
@@ -24,7 +25,7 @@ int builtin_run(BuiltinType which, int argc, char **argv,
         case BUILTIN_EXIT: return bi_exit(argc, argv, should_exit, exit_status);
         case BUILTIN_PWD:  return bi_pwd(argc, argv);
         case BUILTIN_CD:   return bi_cd(argc, argv);
-        // case BUILTIN_ECHO: return bi_echo(argc, argv);
+        case BUILTIN_ECHO: return bi_echo(argc, argv);
         default:           return -1;
     }
 }
@@ -45,8 +46,11 @@ static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status){
 
 static int bi_pwd(int argc, char **argv){
     char *buf = getcwd(NULL, 0);
-    if(buf == NULL) { printf("error pwd"); return 1; }
-    printf(buf); putchar('\n');
+    if(buf == NULL) { 
+        perror("pwd"); 
+        return 1; 
+    }
+    printf("%s\n", buf);
     free(buf);
     return 0;
 }
@@ -55,7 +59,7 @@ static int bi_cd(int argc, char **argv){
     if(argc == 1){
         char *home = getenv("HOME");
         if(home == NULL){
-            printf("cd: HOME env variable error\n");
+            fprintf(stderr, "cd: HOME env variable error\n");
             return 1;
         }
         if(chdir(home) != 0){
@@ -65,7 +69,7 @@ static int bi_cd(int argc, char **argv){
         return 0;
     }
     if(argc > 2){
-        printf("cd: too many arguments\n");
+        fprintf(stderr, "cd: too many arguments\n");
         return 1;
     }
 
@@ -74,5 +78,15 @@ static int bi_cd(int argc, char **argv){
         perror("cd");
         return 1;
     }
+    return 0;
+}
+
+static int bi_echo(int argc, char **argv){
+    for(int i = 1; i < argc; ++i) {
+        printf("%s", argv[i]);
+        if(i < argc - 1)
+            putchar(' ');
+    }
+    putchar('\n');
     return 0;
 }
