@@ -71,6 +71,7 @@ static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status){
     // Fallback (should never happen)
     return 1;
 }
+
 /*
 Builtin: pwd
 Usage:
@@ -91,6 +92,7 @@ Usage:
     free(buf);
     return 0;
 }
+
 /*
 Builtin: cd
 Usage:
@@ -181,7 +183,7 @@ static int bi_cd(int argc, char **argv){
     return 0;
 }
 
-
+//just echo...
 static int bi_echo(int argc, char **argv){
     for(int i = 1; i < argc; ++i) {
         printf("%s", argv[i]);
