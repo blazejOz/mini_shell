@@ -22,3 +22,5 @@ char *c_string_duplication(const char *s){
     memcpy(copy, s, len);
     return copy;
 }
+
+

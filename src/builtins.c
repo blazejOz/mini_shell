@@ -35,8 +35,7 @@ Usage:
   exit        -> exit shell with status 0
   exit N      -> exit shell with status N (only low 8 bits matter in shells)
   exit N M... -> error: too many arguments, do not exit
-  exit foo    -> error: not a valid number, do not exit 
-*/
+  exit foo    -> error: not a valid number, do not exit  */
 static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status){
     // Case: "exit" with extra arguments beyond one -> error, don't exit
     if(argc > 2){
@@ -76,8 +75,7 @@ static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status){
 Builtin: pwd
 Usage:
   pwd        -> print the current working directory
-  pwd ARGS.. -> error: too many arguments
-*/
+  pwd ARGS.. -> error: too many arguments */
   static int bi_pwd(int argc, char **argv){
     if (argc > 1) {
     fprintf(stderr, "pwd: too many arguments\n");
@@ -93,32 +91,96 @@ Usage:
     free(buf);
     return 0;
 }
-
+/*
+Builtin: cd
+Usage:
+  cd           -> change to $HOME
+  cd PATH      -> change to PATH
+  cd -         -> change to $OLDPWD and print it
+Errors:
+  - Too many args      -> "cd: too many arguments"
+  - $HOME/$OLDPWD unset -> print error
+  - chdir() or getcwd() failure -> perror("cd") */
 static int bi_cd(int argc, char **argv){
-    if(argc == 1){
-        char *home = getenv("HOME");
-        if(home == NULL){
-            fprintf(stderr, "cd: HOME env variable error\n");
-            return 1;
-        }
-        if(chdir(home) != 0){
-            perror("cd");
-            return 1;
-        }
-        return 0;
-    }
-    if(argc > 2){
+    if (argc > 2) {
         fprintf(stderr, "cd: too many arguments\n");
         return 1;
     }
 
+    char *oldpwd = getcwd(NULL, 0);
+
+    // Case 1: plain "cd" → $HOME
+    if (argc == 1) {
+        char *home = getenv("HOME");
+        if (!home) {
+            fprintf(stderr, "cd: HOME not set\n");
+            free(oldpwd);
+            return 1;
+        }
+        if (chdir(home) != 0) {
+            perror("cd");
+            free(oldpwd);
+            return 1;
+        }
+
+        char *newpwd = getcwd(NULL, 0);
+        if (!newpwd) { perror("cd"); free(oldpwd); return 1; }
+
+        if (oldpwd) setenv("OLDPWD", oldpwd, 1);
+        setenv("PWD", newpwd, 1);
+
+        free(oldpwd);
+        free(newpwd);
+        return 0;
+    }
+
+    // Case 2: "cd -"
+    if (strcmp(argv[1], "-") == 0) {
+        char *old = getenv("OLDPWD");
+        if (!old) {
+            fprintf(stderr, "cd: OLDPWD not set\n");
+            free(oldpwd);
+            return 1;
+        }
+        if (chdir(old) != 0) {
+            perror("cd");
+            free(oldpwd);
+            return 1;
+        }
+
+        char *newpwd = getcwd(NULL, 0);
+        if (!newpwd) { perror("cd"); free(oldpwd); return 1; }
+
+        if (oldpwd) setenv("OLDPWD", oldpwd, 1);
+        setenv("PWD", newpwd, 1);
+
+        puts(newpwd);
+
+        free(oldpwd);
+        free(newpwd);
+        return 0;
+    }
+
+
+    // Case 3: "cd PATH"
     char *target = argv[1];
-    if(chdir(target) != 0){
+    if (chdir(target) != 0) {
         perror("cd");
+        free(oldpwd);
         return 1;
     }
+
+    char *newpwd = getcwd(NULL, 0);
+    if (!newpwd) { perror("cd"); free(oldpwd); return 1; }
+
+    if (oldpwd) setenv("OLDPWD", oldpwd, 1);
+    setenv("PWD", newpwd, 1);
+
+    free(oldpwd);
+    free(newpwd);
     return 0;
 }
+
 
 static int bi_echo(int argc, char **argv){
     for(int i = 1; i < argc; ++i) {
