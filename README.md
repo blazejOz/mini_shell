@@ -5,16 +5,17 @@ A simple Unix-like shell written in C for learning and experimentation.
 ## Prerequisites
 - Linux or macOS with a POSIX userland
 - `gcc` or `clang`
-- Make
+- `make`
 - C standard: C17; uses POSIX.1-2008 APIs
 
 ## Quickstart
+
 ```bash
-git clone <REPO_URL> mini_shell && cd mini_shell
+git clone <REPO_URL> mini_shell
+cd mini_shell
 make
 ./build/mini_shell
-
-
+```
 
 ## Project Structure
 
@@ -32,13 +33,12 @@ mini_shell/
 │   ├── parser.h
 │   └── utils.h
 ├── tests/              # Test files
-│   └── test_builtins.c
-│   └── test_parser.c
+│   ├── test_builtins.c
+│   ├── test_parser.c
 │   └── test_execargs.c
 ├── Makefile            # Build instructions
 └── README.md           # Project documentation
 ```
-
 
 ## Features
 
@@ -68,11 +68,11 @@ make
 ## Running
 
 ```bash
-./mini_shell
+./build/mini_shell
 ```
 
 ## Testing
- 
+
 ```bash
 make test
 make check
@@ -84,6 +84,4 @@ MIT License
 
 ---
 
-This project is for educational purposes and demonstrates basic shell concepts and system programming in C
-
-
+This project is for educational purposes and demonstrates basic shell concepts and system programming in C.
