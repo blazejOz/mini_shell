@@ -38,13 +38,15 @@ void shell_loop(){
 
         ExecArgs ea; execargs_init(&ea);
 
-        for(int i = 0; i < token_count; i++){
-            if(execargs_push(&ea, tokens[i]) != 0){
-                printf("error execargs_push");
-                execargs_free(&ea);
-                continue;
+        int push_failed = 0;
+        for (int i = 0; i < token_count; i++) {
+            if (execargs_push(&ea, tokens[i]) != 0) {
+                fprintf(stderr, "mini-shell: execargs_push failed\n");
+                push_failed = 1;
+                break;             
             }
         }
+        if (push_failed) { execargs_free(&ea); continue; }
         
         if(execargs_finalize(&ea) != 0){
             printf("error finalize");
@@ -93,7 +95,9 @@ int run_external(ExecArgs *ea, int  *exit_status){
     } else if (pid > 0) {
         // Parent
         int status;
-        waitpid(pid, &status, 0);   
+        waitpid(pid, &status, 0); 
+        if(exit_status) *exit_status = 0;
+        return 0;  
     } else {
         perror("fork");     
         return -1;
