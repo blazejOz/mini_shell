@@ -16,8 +16,10 @@ void shell_loop(){
     char buffer[1024];
 
     while(1){
+        // Show prompt
         printf("mini-shell> ");
 
+        // Read one line of input from user
         if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
             printf("\n");
             break;
@@ -29,15 +31,16 @@ void shell_loop(){
             buffer[len-1] = '\0';
         }
 
-        //check if empty/whitespace buffer
+        // Skip if input is blank
         if(is_blank(buffer)) continue;
 
+        // Split input into tokens (words separated by spaces)
         char *tokens[MAX_TOKENS];
         int token_count = tokenize(buffer, tokens, MAX_TOKENS);
         if (token_count <= 0) continue;
 
+        // Build ExecArgs structure from tokens
         ExecArgs ea; execargs_init(&ea);
-
         int push_failed = 0;
         for (int i = 0; i < token_count; i++) {
             if (execargs_push(&ea, tokens[i]) != 0) {
@@ -47,9 +50,9 @@ void shell_loop(){
             }
         }
         if (push_failed) { execargs_free(&ea); continue; }
-        
+        // Finalize ExecArgs (add NULL at end)
         if(execargs_finalize(&ea) != 0){
-            printf("error finalize");
+            printf("error finalize\n");
             execargs_free(&ea);
             continue;
         }
@@ -62,8 +65,10 @@ void shell_loop(){
         int should_exit = 0;
         int exit_status = 0;
 
+        // Check if first word matches a builtin command
         BuiltinType builtin = builtin_match(ea.argv[0]);
         if (builtin != BUILTIN_NONE) {
+            //run builtins
             int rc = builtin_run(builtin, ea.argc, ea.argv, &should_exit, &exit_status);
             if(should_exit){
                 execargs_free(&ea);
@@ -73,6 +78,7 @@ void shell_loop(){
             execargs_free(&ea);
             continue;
         }else{
+            // run external programs
             int run_ext = run_external(&ea, &exit_status);
             execargs_free(&ea);
             continue;
@@ -82,6 +88,9 @@ void shell_loop(){
     
 }
 
+// Run an external program (not a builtin)
+// ea->argv must be NULL-terminated
+// Returns 0 on success, -1 on error
 int run_external(ExecArgs *ea, int  *exit_status){
     if (!ea || !ea->argv || !ea->argv[0]) return -1;
 
@@ -99,8 +108,8 @@ int run_external(ExecArgs *ea, int  *exit_status){
         if(exit_status) *exit_status = 0;
         return 0;  
     } else {
+        // fork() failed
         perror("fork");     
         return -1;
     }
-    return 0;
 }
