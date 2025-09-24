@@ -2,11 +2,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <sys/wait.h>
+#include <unistd.h>
 #include "utils.h"
 #include "parser.h"
 #include "execargs.h"
 #include "builtins.h"
+
+
+static int run_external(ExecArgs *ea,int  *exit_status);
 
 void shell_loop(){
     char buffer[1024];
@@ -38,7 +42,7 @@ void shell_loop(){
             if(execargs_push(&ea, tokens[i]) != 0){
                 printf("error execargs_push");
                 execargs_free(&ea);
-                ;
+                continue;
             }
         }
         
@@ -57,12 +61,6 @@ void shell_loop(){
         int exit_status = 0;
 
         BuiltinType builtin = builtin_match(ea.argv[0]);
-        if(builtin == BUILTIN_NONE){
-            printf("invalid argument\n");
-            execargs_free(&ea);
-            continue;
-        }
-
         if (builtin != BUILTIN_NONE) {
             int rc = builtin_run(builtin, ea.argc, ea.argv, &should_exit, &exit_status);
             if(should_exit){
@@ -72,8 +70,33 @@ void shell_loop(){
 
             execargs_free(&ea);
             continue;
+        }else{
+            int run_ext = run_external(&ea, &exit_status);
+            execargs_free(&ea);
+            continue;
         }
+
     }
     
 }
 
+int run_external(ExecArgs *ea, int  *exit_status){
+    if (!ea || !ea->argv || !ea->argv[0]) return -1;
+
+   pid_t pid = fork();
+
+    if (pid == 0) {
+        // Child
+        execvp(ea->argv[0], ea->argv);
+        perror("execvp");   
+        _exit(1);           
+    } else if (pid > 0) {
+        // Parent
+        int status;
+        waitpid(pid, &status, 0);   
+    } else {
+        perror("fork");     
+        return -1;
+    }
+    return 0;
+}
