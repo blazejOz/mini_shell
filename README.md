@@ -49,11 +49,12 @@ mini_shell/
   - `pwd` — print the current working directory
   - `cd` — change the current directory
   - `echo` — print arguments to standard output
+- Running external programs (`exec`)
 - Basic error handling for invalid usage
 
 ## Planned Features
 
-- Running external programs (`exec`)
+- ~~Running external programs (`exec`)~~
 - I/O redirection (`>`, `<`)
 - Pipes (`|`)
 - Environment variable expansion (`$VAR`)
@@ -68,7 +69,7 @@ make
 ## Running
 
 ```bash
-./build/mini_shell
+./mini_shell
 ```
 
 ## Testing
