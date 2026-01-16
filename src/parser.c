@@ -1,6 +1,24 @@
 #include "parser.h"
+#include "utils.h"
+#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include <stddef.h>
+
+Pipeline* parse_pipeline(char *input)
+{
+    Pipeline *pipeline = malloc(sizeof(Pipeline));
+    
+    int num_cmds = 0;
+    if(!is_blank(input)) num_cmds++;
+    for(int i = 0; input[i]; i++) {if (input[i] == '|') num_cmds++;}
+    pipeline->num_commands = num_cmds;
+
+
+
+}
+
+
 
 int tokenize(char *line, char **tokens, int max_tokens){
     char *char_ptr = line;

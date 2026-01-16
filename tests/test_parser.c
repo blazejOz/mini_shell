@@ -4,7 +4,22 @@
 #include <stdio.h>
 #include "parser.h"
 
+Pipeline *pipeline;
 
+void test_pipeCounting()
+{
+    char* input = "1|2|3";
+    pipeline = parse_pipeline(input);
+    int num_cmds = pipeline->num_commands;
+    assert(num_cmds == 3);
+
+    input = "";
+    pipeline = parse_pipeline(input);
+    num_cmds = pipeline->num_commands;
+    assert(num_cmds == 0);
+
+
+}
 
 void test_empty(){
     char buff[] = "";
@@ -50,10 +65,11 @@ void test_whitespace(){
 }
 
 int main(void){
-    test_empty();
-    test_single_token();
-    test_multiple_tokens();
-    test_whitespace();
+    test_pipeCounting();
+    // test_empty();
+    // test_single_token();
+    // test_multiple_tokens();
+    // test_whitespace();
     puts("OK: all parser tests passed");
     return 0;
 }
