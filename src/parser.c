@@ -57,3 +57,17 @@ char** tokenize(char *line)
     tokens[argc] = NULL;
     return tokens;
 }
+
+void free_pipeline(Pipeline *pipeline) {
+    if (!pipeline) return;
+
+    if (pipeline->commands) {
+        for (int i = 0; i < pipeline->num_commands; i++) {
+            if (pipeline->commands[i].args) {
+                free(pipeline->commands[i].args);
+            }
+        }
+        free(pipeline->commands);
+    }
+    free(pipeline);
+}

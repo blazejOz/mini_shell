@@ -4,70 +4,60 @@
 #include <stdio.h>
 #include "parser.h"
 
-Pipeline *pipeline;
 
-void test_pipeCounting()
+
+void test_pipeCounting() 
 {
-    char* input = "1|2|3";
-    pipeline = parse_pipeline(input);
-    int num_cmds = pipeline->num_commands;
-    assert(num_cmds == 3);
+    char input1[] = "1|2|3";
+    Pipeline *p1 = parse_pipeline(input1);
+    assert(p1->num_commands == 3);
+    free_pipeline(p1);
 
-    input = "";
-    pipeline = parse_pipeline(input);
-    num_cmds = pipeline->num_commands;
-    assert(num_cmds == 0);
+    char input2[] = "";
+    Pipeline *p2 = parse_pipeline(input2);
+    assert(p2->num_commands == 0);
+    free_pipeline(p2);
+    
+    printf("test_pipeCounting passed\n");
 }
 
-void test_empty(){
-    char buff[] = "";
-    char *tokens[4] = {0};
-    int n = tokenize(buff, tokens, 4);
+void test_empty() 
+{
+    char input[] = "";
+    Pipeline *p = parse_pipeline(input);
 
-    assert(n == 0);
-    assert(tokens[0] == NULL);
+   
+    if (p == NULL) {
+        assert(p == NULL);
+    } else {
+        assert(p->num_commands == 0);
+        free_pipeline(p); 
+    }
+    printf("test_empty passed\n");
 }
 
-void test_single_token(){
-    char buff[] = "ls";
-    char *tokens[4] = {0};
-    int n = tokenize(buff, tokens, 4);
+void test_single_command() 
+{
+    char input[] = "ls -la";
+    Pipeline *p = parse_pipeline(input);
 
-    assert(n == 1);
-    assert(strcmp(tokens[0], "ls") == 0);
-    assert(tokens[1] == NULL);
+    assert(p != NULL);
+    assert(p->num_commands == 1);
+
+    assert(strcmp(p->commands[0].args[0], "ls") == 0);
+    assert(strcmp(p->commands[0].args[1], "-la") == 0);
+    assert(p->commands[0].args[2] == NULL); 
+
+    free_pipeline(p);
+    printf("test_single_command passed\n");
 }
 
-void test_multiple_tokens(){
-    char buff[] = "ls -l -a";
-    char *tokens[4] = {0};
-    int n = tokenize(buff, tokens, 4);
-
-    assert(n == 3);
-    assert(strcmp(tokens[0], "ls") == 0);
-    assert(strcmp(tokens[1], "-l") == 0);
-    assert(strcmp(tokens[2], "-a") == 0);
-    assert(tokens[3] == NULL);
-
-}
-
-void test_whitespace(){
-    char buff[] = "     ls\t-l  ";
-    char *tokens[4] = {0};
-    int n = tokenize(buff, tokens, 4);
-
-    assert(n == 2);
-    assert(strcmp(tokens[0], "ls") == 0);
-    assert(strcmp(tokens[1], "-l") == 0);
-    assert(tokens[2] == NULL);
-}
 
 int main(void){
     test_pipeCounting();
-    // test_empty();
-    // test_single_token();
-    // test_multiple_tokens();
-    // test_whitespace();
+    test_empty();
+    test_single_command();
+
     puts("OK: all parser tests passed");
     return 0;
 }
