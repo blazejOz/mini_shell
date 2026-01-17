@@ -17,8 +17,6 @@ void test_pipeCounting()
     pipeline = parse_pipeline(input);
     num_cmds = pipeline->num_commands;
     assert(num_cmds == 0);
-
-
 }
 
 void test_empty(){
