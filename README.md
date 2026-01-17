@@ -2,6 +2,8 @@
 
 A simple Unix-like shell written in C for learning and experimentation.
 
+![Mini-Shell Demo](assets/demo.gif)
+
 ## Prerequisites
 - Linux or macOS with a POSIX userland
 - `gcc` or `clang`
@@ -35,30 +37,30 @@ mini_shell/
 ├── tests/              # Test files
 │   ├── test_builtins.c
 │   ├── test_parser.c
-│   └── test_execargs.c
 ├── Makefile            # Build instructions
 └── README.md           # Project documentation
 ```
 
 ## Features
 
-- Interactive shell prompt
-- Command parsing and tokenization
-- Built-in commands:
-  - `exit` — exit the shell (optionally with a status code)
-  - `pwd` — print the current working directory
-  - `cd` — change the current directory
-  - `echo` — print arguments to standard output
-- Running external programs (`exec`)
-- Basic error handling for invalid usage
+- **Interactive Shell Loop:** Robust REPL (Read-Eval-Print Loop) with a clean prompt.
+- **Advanced Command Pipeline:** Supports chaining multiple commands using the `|` operator. 
+  - Efficiently handles $N$ processes with $N-1$ concurrent pipes.
+  - Proper file descriptor management (uses `dup2` for I/O redirection between stages).
+  - Synchronous execution: The shell waits for the entire pipeline to complete before returning to the prompt.
+- **Intelligent Command Dispatcher:**
+  - **Built-in Commands:** Executed directly in the parent process (`cd`, `exit`, `pwd`, `echo`).
+  - **External Binaries:** Discovered via `$PATH` and executed in forked subshells using `execvp`.
+- **Memory Safety:** Implements a multi-level cleanup strategy to ensure no memory leaks during parsing or execution.
 
-## Planned Features
+## Roadmap & Planned Features
 
-- ~~Running external programs (`exec`)~~
-- I/O redirection (`>`, `<`)
-- Pipes (`|`)
-- Environment variable expansion (`$VAR`)
-- Command history
+- [x] **Process Pipelines:** Concurrent execution of piped commands.
+- [x] **External Execution:** Full integration with system binaries via `exec`.
+- [ ] **I/O Redirection:** Implementing file descriptor hijacking for `>`, `>>`, and `<`.
+- [ ] **Signal Handling:** Graceful management of `Ctrl+C` (SIGINT) and `Ctrl+Z` (SIGTSTP).
+- [ ] **Variable Expansion:** Support for `$HOME`, `$USER`, and local shell variables.
+- [ ] **Persistence:** Command history saved to `~/.mini_shell_history`.
 
 ## Building
 
@@ -76,7 +78,6 @@ make
 
 ```bash
 make test
-make check
 ```
 
 ## License

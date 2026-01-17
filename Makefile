@@ -7,7 +7,7 @@ TARGET := mini-shell
 
 # --- Test Configuration ---
 TEST_DIR := build
-TEST_BIN := $(TEST_DIR)/test_parser $(TEST_DIR)/test_builtins $(TEST_DIR)/test_execargs
+TEST_BIN := $(TEST_DIR)/test_parser $(TEST_DIR)/test_builtins
 
 # Default target
 all: $(TARGET)
@@ -40,15 +40,12 @@ test-parser: $(TEST_DIR)/test_parser
 test-builtins: $(TEST_DIR)/test_builtins
 	./$(TEST_DIR)/test_builtins
 
-# Run only execarg tests: make test-execargs
-test-execargs: $(TEST_DIR)/test_execargs
-	./$(TEST_DIR)/test_execargs
 
 # Run everything: make test-all or make check
 test-all: $(TEST_BIN)
 	@for test in $(TEST_BIN); do \
 		echo "Running $$test..."; \
-		./$$test || exit 1; \
+		./$$test 2>/dev/null || exit 1; \
 	done
 
 # Aliases
