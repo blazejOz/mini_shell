@@ -17,6 +17,6 @@ typedef struct{
 
 Pipeline* parse_pipeline(char *input);
 void free_pipeline(Pipeline *pipeline);
-int tokenize(char *line, char **argv, int max_tokens);
+char** tokenize(char *line);
 
 #endif

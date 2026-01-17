@@ -18,21 +18,21 @@ Pipeline* parse_pipeline(char *input)
     //Allocate space for the Command structs
     pipeline->commands = malloc(sizeof(Command) * num_cmds);
     
-    char* line = strtok(input, "|");
+    char* cmd_str = strtok(input, "|");
     int cmd_indx = 0;
 
-    while(line != NULL && cmd_indx < num_cmds){
-        pipeline->commands[cmd_indx].args = tokenize(line);
+    //Parse command string into tokens and assign to command array in Pipeline
+    while(cmd_str != NULL && cmd_indx < num_cmds){
+        pipeline->commands[cmd_indx].args = tokenize(cmd_str);
         cmd_indx++;
-        
+        cmd_str = strtok(NULL, "|");
     }
 
-
+    return pipeline;
 }
 
-
-
-char** tokenize(char *line){
+char** tokenize(char *line)
+{
     char *char_ptr = line;
     int argc = 0;
 
@@ -55,5 +55,5 @@ char** tokenize(char *line){
         tokens[argc++] = token_start;
     }
     tokens[argc] = NULL;
-    return argc;
+    return tokens;
 }
