@@ -52,9 +52,10 @@ void run_commands(Pipeline *pipeline,int* should_exit, int* exit_status){
     int num_cmd = pipeline->num_commands;
 
     if(num_cmd == 1){
-        BuiltinType builtin = builtin_match(pipeline->commands[0].args[0]);
-        if(builtin != BUILTIN_NONE){
-            builtin_run(builtin, pipeline->commands[0].args, should_exit, exit_status);
+        BuiltinType builtinType = builtin_match(pipeline->commands[0].args[0]);
+        if(builtinType != BUILTIN_NONE){
+           *exit_status =  builtin_run(builtinType, pipeline->commands[0].args, should_exit, exit_status);
+            return;
         }
     }
 

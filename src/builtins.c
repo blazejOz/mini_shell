@@ -79,7 +79,7 @@ Usage:
   pwd        -> print the current working directory
   pwd ARGS.. -> error: too many arguments 
 */
-  static int bi_pwd(char **args){
+static int bi_pwd(char **args){
     int argc = count_args(args);
     if (argc > 1) {
     fprintf(stderr, "pwd: too many arguments\n");
