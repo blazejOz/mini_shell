@@ -1,4 +1,5 @@
 #include "builtins.h"
+#include "utils.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,18 +14,17 @@ BuiltinType builtin_match(const char *cmd){
     return BUILTIN_NONE;
 }
 
-static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status);
-static int bi_pwd(int argc, char **argv);
-static int bi_cd(int argc, char **argv);
-static int bi_echo(int argc, char **argv);
+static int bi_exit(char **argv, int *should_exit, int *exit_status);
+static int bi_pwd(char **argv);
+static int bi_cd(char **argv);
+static int bi_echo(char **argv);
 
-int builtin_run(BuiltinType which, int argc, char **argv,
-                int *should_exit, int *exit_status) {
+int builtin_run(BuiltinType which, char **args, int *should_exit, int *exit_status) {
     switch (which) {
-        case BUILTIN_EXIT: return bi_exit(argc, argv, should_exit, exit_status);
-        case BUILTIN_PWD:  return bi_pwd(argc, argv);
-        case BUILTIN_CD:   return bi_cd(argc, argv);
-        case BUILTIN_ECHO: return bi_echo(argc, argv);
+        case BUILTIN_EXIT: return bi_exit(args, should_exit, exit_status);
+        case BUILTIN_PWD:  return bi_pwd(args);
+        case BUILTIN_CD:   return bi_cd(args);
+        case BUILTIN_ECHO: return bi_echo(args);
         default:           return -1;
     }
 }
@@ -36,7 +36,8 @@ Usage:
   exit N      -> exit shell with status N (only low 8 bits matter in shells)
   exit N M... -> error: too many arguments, do not exit
   exit foo    -> error: not a valid number, do not exit  */
-static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status){
+static int bi_exit(char **args, int *should_exit, int *exit_status){
+    int argc = count_args(args);
     // Case: "exit" with extra arguments beyond one -> error, don't exit
     if(argc > 2){
         fprintf(stderr, "exit: too many arguments\n");
@@ -53,12 +54,12 @@ static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status){
     // Case: "exit N"
     if(argc == 2){
         char *end = NULL;
-        long num = strtol(argv[1], &end, 10);
+        long num = strtol(args[1], &end, 10);
 
         // Check if the whole string was a valid number
-        if(end == argv[1] || *end != '\0') {
+        if(end == args[1] || *end != '\0') {
             // Nothing parsed or junk after digits -> not numeric
-            fprintf(stderr, "exit: %s: numeric argument required\n", argv[1]);
+            fprintf(stderr, "exit: %s: numeric argument required\n", args[1]);
             return 1;   // nonzero return, but shell keeps running
         }
 
@@ -76,8 +77,10 @@ static int bi_exit(int argc, char **argv, int *should_exit, int *exit_status){
 Builtin: pwd
 Usage:
   pwd        -> print the current working directory
-  pwd ARGS.. -> error: too many arguments */
-  static int bi_pwd(int argc, char **argv){
+  pwd ARGS.. -> error: too many arguments 
+*/
+  static int bi_pwd(char **args){
+    int argc = count_args(args);
     if (argc > 1) {
     fprintf(stderr, "pwd: too many arguments\n");
     return 1;
@@ -103,7 +106,9 @@ Errors:
   - Too many args      -> "cd: too many arguments"
   - $HOME/$OLDPWD unset -> print error
   - chdir() or getcwd() failure -> perror("cd") */
-static int bi_cd(int argc, char **argv){
+static int bi_cd(char **args){
+    int argc = count_args(args);
+
     if (argc > 2) {
         fprintf(stderr, "cd: too many arguments\n");
         return 1;
@@ -137,7 +142,7 @@ static int bi_cd(int argc, char **argv){
     }
 
     // Case 2: "cd -"
-    if (strcmp(argv[1], "-") == 0) {
+    if (strcmp(args[1], "-") == 0) {
         char *old = getenv("OLDPWD");
         if (!old) {
             fprintf(stderr, "cd: OLDPWD not set\n");
@@ -165,7 +170,7 @@ static int bi_cd(int argc, char **argv){
 
 
     // Case 3: "cd PATH"
-    char *target = argv[1];
+    char *target = args[1];
     if (chdir(target) != 0) {
         perror("cd");
         free(oldpwd);
@@ -184,9 +189,11 @@ static int bi_cd(int argc, char **argv){
 }
 
 //just echo...
-static int bi_echo(int argc, char **argv){
+static int bi_echo(char **args){
+    int argc = count_args(args);
+
     for(int i = 1; i < argc; ++i) {
-        printf("%s", argv[i]);
+        printf("%s", args[i]);
         if(i < argc - 1)
             putchar(' ');
     }

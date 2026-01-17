@@ -2,11 +2,9 @@
 #define PARSER_H
 
 #define MAX_TOKENS 64
-#define MAX_COMMANDS 16
 
 typedef struct{
     char** args;
-    int argc;
 } Command;
 
 typedef struct{

@@ -2,8 +2,7 @@ CC := gcc
 CFLAGS := -Iinclude -Wall -Wextra -g
 
 # --- Main Program Configuration ---
-# Changed builtins.c to .o so it uses the pattern rule
-OBJ := src/main.o src/shell.o src/parser.o src/utils.o src/execargs.o src/builtins.o
+OBJ := src/main.o src/shell.o src/parser.o src/utils.o src/builtins.o
 TARGET := mini-shell
 
 # --- Test Configuration ---
@@ -22,10 +21,6 @@ src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # --- Test Build Rules ---
-
-$(TEST_DIR)/test_execargs: tests/test_execargs.c src/execargs.c src/utils.c
-	@mkdir -p $(TEST_DIR)
-	$(CC) $(CFLAGS) $^ -o $@
 
 $(TEST_DIR)/test_parser: tests/test_parser.c src/parser.c src/utils.c
 	@mkdir -p $(TEST_DIR)

@@ -3,7 +3,8 @@
 #include <string.h> 
 
 // checks if string is all whitespaces
-int is_blank(char *s){
+int is_blank(char *s)
+{
     while (*s != '\0'){
         if( !isspace(*s))
             return 0;
@@ -12,7 +13,8 @@ int is_blank(char *s){
     return 1;
 }
 
-char *c_string_duplication(const char *s){
+char *c_string_duplication(const char *s)
+{
     if(s==NULL) return NULL;
 
     size_t len = strlen(s) + 1;
@@ -21,6 +23,16 @@ char *c_string_duplication(const char *s){
 
     memcpy(copy, s, len);
     return copy;
+}
+
+
+int count_args(char** args)
+{
+    int argc = 0;
+    
+    while(args[argc] != NULL){ argc++; }
+
+    return argc;
 }
 
 

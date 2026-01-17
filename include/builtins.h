@@ -11,7 +11,6 @@ typedef enum {
 
 BuiltinType builtin_match(const char *cmd);
 
-int builtin_run(BuiltinType which, int argc, char **argv,
-    int *should_exit, int *exit_status);
+int builtin_run(BuiltinType which, char **args, int *should_exit, int *exit_status);
 
 #endif
