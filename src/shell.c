@@ -77,23 +77,22 @@ void run_commands(Pipeline *pipeline,int* should_exit, int* exit_status){
         pid_t pid = fork();
         if (pid == 0) { 
             // CHILD
-            // Redirect Input (unless it's the first command)
+            // Redirect Input (unless its the first command)
             if (i > 0) {
                 dup2(in_fd, STDIN_FILENO);
                 close(in_fd);
             }
 
-            // Redirect Output (unless it's the last command)
+            // Redirect Output (unless its the last command)
             if (i < num_cmds - 1) {
                 close(pipe_fds[0]); 
                 dup2(pipe_fds[1], STDOUT_FILENO);
                 close(pipe_fds[1]);
             }
 
-            // 4. Handle Builtins vs External
+            // Handle Builtins vs External
             BuiltinType b_type = builtin_match(pipeline->commands[i].args[0]);
             if (b_type != BUILTIN_NONE) {
-                // We are in a child, so we don't care about should_exit here
                 int dummy_exit = 0;
                 int status = builtin_run(b_type, pipeline->commands[i].args, &dummy_exit, exit_status);
                 exit(status);
@@ -112,7 +111,7 @@ void run_commands(Pipeline *pipeline,int* should_exit, int* exit_status){
         }
     }
 
-    // 5. Wait for children
+    // wait for children
     int status;
     for (int i = 0; i < num_cmds; i++) {
         wait(&status);

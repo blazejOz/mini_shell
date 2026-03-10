@@ -15,8 +15,8 @@ A simple Unix-like shell written in C for learning and experimentation.
 ```bash
 git clone https://github.com/blazejOz/mini_shell mini_shell
 cd mini_shell
-make
-./mini_shell
+cmake -B build
+./build/mini_shell
 ```
 
 ## Project Structure
@@ -65,19 +65,20 @@ mini_shell/
 ## Building
 
 ```bash
-make
+cmake -B build
+cmake --build build
 ```
 
 ## Running
 
 ```bash
-./mini_shell
+./build/mini_shell
 ```
 
 ## Testing
 
 ```bash
-make test
+./build/unit_tests
 ```
 
 ## License
