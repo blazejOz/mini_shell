@@ -52,12 +52,10 @@ void test_single_command()
     printf("test_single_command passed\n");
 }
 
-
-int main(void){
+void run_all_parser_tests() {
+    printf("--- Running Parser Tests ---\n");
     test_pipeCounting();
     test_empty();
     test_single_command();
-
-    puts("OK: all parser tests passed");
-    return 0;
+    printf("Parser tests passed!\n\n");
 }

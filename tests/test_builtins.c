@@ -74,10 +74,10 @@ void test_builtin_cd(){
 
 }
 
-int main(void) {
+void run_all_builtin_tests() {
+    printf("--- Running Builtin Tests ---\n");
     test_builtin_exit();
     test_builtin_pwd();
     test_builtin_cd();
-    puts("OK: builtin_run tests passed");
-    return 0;
+    printf("Builtin tests passed!\n\n");
 }
