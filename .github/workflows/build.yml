@@ -3,17 +3,12 @@ name: CI and Docker
 on:
   push:
     branches: [ "main" ]
-
-    permissions:
-      contents: read
-      packages: write
-
   pull_request:
     branches: [ "main" ]
-    
-    permissions:
-      contents: read
-      packages: write
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build-and-test:
@@ -38,11 +33,11 @@ jobs:
       run: ./build/unit_tests
 
     - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
