@@ -44,4 +44,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ghcr.io/${{ github.repository }}:latest
+        tags: ghcr.io/blazejoz/mini_shell:latest
