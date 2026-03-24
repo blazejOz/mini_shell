@@ -19,6 +19,13 @@ cmake -B build
 ./build/mini_shell
 ```
 
+## Try it with Docker
+You don't need to compile anything to try out mini_shell. You can run the latest version directly from GitHub Packages:
+```bash
+docker run -it --rm ghcr.io/blazejoz/mini_shell:latest
+```
+The -it flags are required to interact with the shell's prompt. The --rm flag ensures the container is cleaned up after you exit.
+
 ## Project Structure
 
 ```
